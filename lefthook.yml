@@ -2,7 +2,9 @@ pre-commit:
   commands:
     format:
       glob: "*.{ts,tsx,js,mjs,json}"
-      run: oxfmt --check {staged_files}
+      # --no-error-on-unmatched-pattern: a staged set that is entirely oxfmt-ignored
+      # (e.g. package.json / lockfile-only commits) otherwise exits 2 and false-blocks.
+      run: oxfmt --check --no-error-on-unmatched-pattern {staged_files}
     lint:
       glob: "*.{ts,tsx}"
       run: oxlint {staged_files}

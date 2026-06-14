@@ -1,6 +1,6 @@
 {
   "name": "@solid-stats/ts-toolchain",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "private": false,
   "description": "Shared TypeScript toolchain presets for Solid Stats services",
   "files": [
