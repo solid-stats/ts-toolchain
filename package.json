@@ -1,6 +1,6 @@
 {
   "name": "@solid-stats/ts-toolchain",
-  "version": "0.1.0",
+  "version": "0.1.2",
   "private": false,
   "description": "Shared TypeScript toolchain presets for Solid Stats services",
   "files": [
@@ -15,7 +15,10 @@
     "./tsconfig/base.json": "./tsconfig/base.json",
     "./oxlint/base.oxlintrc.json": "./oxlint/base.oxlintrc.json",
     "./oxfmt/base.oxfmtrc.json": "./oxfmt/base.oxfmtrc.json",
-    "./vitest/base": "./vitest/base.ts",
+    "./vitest/base": {
+      "types": "./vitest/base.d.ts",
+      "default": "./vitest/base.js"
+    },
     "./lefthook.yml": "./lefthook.yml"
   },
   "scripts": {

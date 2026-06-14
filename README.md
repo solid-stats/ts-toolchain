@@ -11,7 +11,7 @@ This is a pilot package. It contains config-only presets — no runtime code, no
 | TypeScript base | `tsconfig/base.json`        | `"extends": "@solid-stats/ts-toolchain/tsconfig/base.json"`                                |
 | oxlint rules    | `oxlint/base.oxlintrc.json` | `"extends": ["./node_modules/@solid-stats/ts-toolchain/oxlint/base.oxlintrc.json"]`        |
 | oxfmt reference | `oxfmt/base.oxfmtrc.json`   | Duplicate values — oxfmt does not support `extends`                                        |
-| vitest coverage | `vitest/base.ts`            | `import { vitestBaseConfig } from "@solid-stats/ts-toolchain/vitest/base"` + `mergeConfig` |
+| vitest coverage | `vitest/base.js` + `.d.ts`  | `import { vitestBaseConfig } from "@solid-stats/ts-toolchain/vitest/base"` + `mergeConfig` |
 | lefthook hooks  | `lefthook.yml`              | `extends: ["node_modules/@solid-stats/ts-toolchain/lefthook.yml"]`                         |
 
 ## Pinning
