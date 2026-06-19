@@ -1,22 +1,24 @@
 # @solid-stats/ts-toolchain
 
-Shared TypeScript toolchain presets for Solid Stats services (replays-fetcher, server-2, web).
+**Русский** · [English](README.en.md)
 
-This is a pilot package. It contains config-only presets — no runtime code, no build step.
+Общий пакет пресетов TypeScript-тулчейна для **Solid Stats** — статистики игр
+сообщества [Solid Games](https://sg.zone) (ArmA 3). Один источник правды для
+конфигов tsconfig, oxlint, oxfmt, vitest и lefthook-хуков, чтобы TS-репозитории
+платформы держали единую строгость компилятора, линтинга, форматирования и гейтов
+покрытия.
 
-## Presets
+Часть многорепной платформы: его потребляют backend `server-2`, ingest-CLI
+`replays-fetcher` и веб-интерфейс `web`. Пакет — только конфиги: ни рантайм-кода, ни
+шага сборки; границу рантайма он не пересекает.
 
-| Preset          | File                        | Consumption                                                                                |
-| --------------- | --------------------------- | ------------------------------------------------------------------------------------------ |
-| TypeScript base | `tsconfig/base.json`        | `"extends": "@solid-stats/ts-toolchain/tsconfig/base.json"`                                |
-| oxlint rules    | `oxlint/base.oxlintrc.json` | `"extends": ["./node_modules/@solid-stats/ts-toolchain/oxlint/base.oxlintrc.json"]`        |
-| oxfmt reference | `oxfmt/base.oxfmtrc.json`   | Duplicate values — oxfmt does not support `extends`                                        |
-| vitest coverage | `vitest/base.js` + `.d.ts`  | `import { vitestBaseConfig } from "@solid-stats/ts-toolchain/vitest/base"` + `mergeConfig` |
-| lefthook hooks  | `lefthook.yml`              | `extends: ["node_modules/@solid-stats/ts-toolchain/lefthook.yml"]`                         |
+> Solid Stats от и до строят AI-агенты по процессу
+> [GSD](https://github.com/open-gsd/gsd-core). Разработка вне GSD — вне процесса.
 
-## Pinning
+## Быстрый старт
 
-Consumers must pin by **tag or commit SHA** — never by branch ref.
+Подключают пакет как dev-зависимость, закреплённую по тегу или SHA коммита (никогда
+по ветке — ссылка на ветку ломает воспроизводимость lock-файла):
 
 ```json
 {
@@ -26,74 +28,18 @@ Consumers must pin by **tag or commit SHA** — never by branch ref.
 }
 ```
 
-Branch refs (`#master`) re-resolve on every `pnpm install` and make the lockfile non-reproducible.
+Дальше каждый пресет подключают по-своему — tsconfig и lefthook через `extends`,
+oxlint через путь в `node_modules`, vitest через `mergeConfig`, oxfmt копированием
+значений (он не поддерживает `extends`). Полная таблица потребления и примеры — в
+документации ниже.
 
-## tsconfig extends
+## Документация
 
-```json
-{
-  "extends": "@solid-stats/ts-toolchain/tsconfig/base.json",
-  "compilerOptions": {
-    "outDir": "dist",
-    "rootDir": ".",
-    "types": ["node"]
-  },
-  "include": ["src/**/*.ts"],
-  "exclude": ["dist", "node_modules"]
-}
-```
+- docs/presets-reference.md — пресеты, политика закрепления версий, подключение
+  каждого пресета (tsconfig · oxlint · oxfmt · vitest · lefthook), версии и CI
 
-Repo-specific fields (`outDir`, `rootDir`, `types`, `include`, `exclude`) always go in the consumer tsconfig, never in the shared base.
+## Стек
 
-## oxlint extends
+TypeScript 6 · Node 25 · pnpm 11 · oxlint · oxfmt · Vitest 4 · lefthook
 
-oxlint `.oxlintrc.json` only supports relative file paths in `extends` — bare package specifiers are not yet implemented. Use the full `node_modules` path:
-
-```json
-{
-  "extends": ["./node_modules/@solid-stats/ts-toolchain/oxlint/base.oxlintrc.json"]
-}
-```
-
-## oxfmt
-
-oxfmt does not support `extends`. Copy the values from `oxfmt/base.oxfmtrc.json` into your own `.oxfmtrc.json`.
-
-## vitest mergeConfig
-
-```typescript
-import { vitestBaseConfig } from "@solid-stats/ts-toolchain/vitest/base";
-import { mergeConfig, defineConfig } from "vitest/config";
-
-export default mergeConfig(
-  vitestBaseConfig,
-  defineConfig({
-    test: {
-      include: ["src/**/*.test.ts"],
-      coverage: {
-        include: ["src/**/*.ts"],
-        exclude: ["src/**/*.test.ts"],
-      },
-    },
-  }),
-);
-```
-
-## lefthook extends
-
-```yaml
-extends:
-  - node_modules/@solid-stats/ts-toolchain/lefthook.yml
-```
-
-## Versions
-
-Preset versions are spike-locked. See `package.json` devDependencies for current pins.
-
-- oxlint: `1.69.0`
-- oxfmt: `0.54.0`
-- typescript: `^6.0.3`
-- node: `>=25 <26`
-- pnpm: `>=11 <12`
-
-This package will be adopted by `server-2` and `web` in later phases. Preset structure is intentionally service-agnostic — not fetcher-specific.
+## Лицензия — MIT
